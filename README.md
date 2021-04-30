@@ -24,7 +24,7 @@ This project provides a Godot driver for the HTC Vive Pro Eye. It uses the
 
 Install the **scons** build system.
 
-Install the **boost** libraries to `C:\local\boost_1_69_0`. If you choosea
+Install the **boost** libraries to `C:\local\boost_1_76_0`. If you choosea
 different directory, adjust the `windows_boost_path` variable in `SConstruct`
 first.
 
