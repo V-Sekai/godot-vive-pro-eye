@@ -35,6 +35,8 @@
 
 #include "SRanipal.h"
 #include "SRanipal_Eye.h"
+#include "SRanipal_Lip.h"
+#include "SRanipal_Enums.h"
 
 #include <boost/lockfree/spsc_queue.hpp>
 #include <optional>
@@ -48,16 +50,21 @@ class MyClass : public godot::Node {
 private:
 	bool data_valid = false;
 	ViveSR::anipal::Eye::EyeData eye_data;
+
+	char lip_image[800 * 400];
+	ViveSR::anipal::Lip::LipData_v2 lip_data_v2;
+
 	/** gives the left, combined or right eye data for eye = -1/0/1 */
 	const ViveSR::anipal::Eye::SingleEyeData* get_eye(int eye);
 
 	boost::lockfree::spsc_queue<ViveSR::anipal::Eye::EyeData, boost::lockfree::capacity<2>> queue;
 	// queue MUST be listed before poll_thread. It is important that poll_thread
 	// gets destructed PRIOR to queue!
-	std::thread poll_thread; // required for getting the full 120Hz from the HMD
+	std::thread poll_eyes_thread; // required for getting the full 120Hz from the HMD
+	std::thread poll_lips_thread; 
 
-	void poll();
-
+	void poll_eyes();
+    void poll_lips();
 public:
 	static void _register_methods();
 	
@@ -117,6 +124,7 @@ public:
 	~MyClass();
 	void _init();
 	void _ready();
+    std::string CovertErrorCode(int error);
 };
 
 }

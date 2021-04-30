@@ -34,6 +34,8 @@
 #include "SRanipal.h"
 #include "SRanipal_Eye.h"
 #include "SRanipal_Enums.h"
+#include "SRanipal_Lip.h"
+#include "SRanipal_Enums.h"
 
 #include <boost/lockfree/spsc_queue.hpp>
 #include <thread>
@@ -59,31 +61,32 @@ void MyClass::_register_methods() {
 }
 
 
-void MyClass::_init() {}
+void MyClass::_init() {
+	lip_data_v2.image = lip_image;
+}
 
 void MyClass::_ready()
 {
 	cout << "MyClass::_ready()" << endl;
-
-	if (ViveSR::anipal::Eye::IsViveProEye())
+	ViveSR::Error err = static_cast<ViveSR::Error>(ViveSR::anipal::Initial(ViveSR::anipal::Eye::ANIPAL_TYPE_EYE, NULL));
+	switch (err)
 	{
-			ViveSR::Error err = static_cast<ViveSR::Error>(ViveSR::anipal::Initial(ViveSR::anipal::Eye::ANIPAL_TYPE_EYE, NULL));
-			switch (err)
-			{
-				case ViveSR::Error::WORK:
-					cout << "Successfully initialized SRanipal." << endl;
-					poll_thread = std::thread(&MyClass::poll, this);
-					break;
-				case ViveSR::Error::RUNTIME_NOT_FOUND:
-					cout << "Failed to initialize SRanipal: Runtime not found." << endl;
-					break;
-				default:
-					cout << "Failed to initialize SRanipal. Unknown error code " << err << endl;
-			}
+		case ViveSR::Error::WORK:
+			cout << "Successfully initialized SRanipal." << endl;
+			poll_eyes_thread = std::thread(&MyClass::poll_eyes, this);
+			break;
+		case ViveSR::Error::RUNTIME_NOT_FOUND:
+			cout << "Failed to initialize SRanipal: Runtime not found." << endl;
+			break;
+		default:
+			cout << "Failed to initialize SRanipal. Unknown error code " << err << endl;
 	}
-	else
-	{
-		cout << "Error: HMD is not a Vive Pro Eye" << endl;
+	int32_t error = ViveSR::anipal::Initial(ViveSR::anipal::Lip::ANIPAL_TYPE_LIP_V2, NULL);
+	if (error == ViveSR::Error::WORK) { 
+		printf("Successfully initialize version2 Lip engine.\n"); 
+		poll_lips_thread = std::thread(&MyClass::poll_lips, this);
+	}	else  {
+		printf("Fail to initialize version2 Lip engine. please refer the code %d %s.\n", error, CovertErrorCode(error).c_str());
 	}
 }
 
@@ -92,10 +95,11 @@ MyClass::MyClass() {
 }
 
 MyClass::~MyClass() {
+    ViveSR::anipal::Release(ViveSR::anipal::Lip::ANIPAL_TYPE_LIP_V2);
 	cout << "MyClass dtor" << endl;
 }
 
-void MyClass::poll()
+void MyClass::poll_eyes()
 {
 	ViveSR::anipal::Eye::EyeData poll_eye_data;
 
@@ -111,16 +115,32 @@ void MyClass::poll()
 
 			if (delta > 0)
 			{
-				if (delta > 1)
+				if (delta > 1) {
 					cout << "frame delta: " << poll_eye_data.frame_sequence - prev_frame << endl;
-
+				}
 				bool success = queue.push(poll_eye_data);
-
-				if (!success)
+				if (!success) {
 					cout << "ringbuf overflow" << endl;
+				}
 			}
 		}
 	}
+}
+
+void godot::MyClass::poll_lips() {
+  ViveSR::anipal::Eye::EyeData poll_eye_data;
+
+  while (true) {
+    std::this_thread::sleep_for(1ms);
+    int32_t result = ViveSR::anipal::Lip::GetLipData_v2(&lip_data_v2);
+    if (result == ViveSR::Error::WORK) {
+      float *weightings = lip_data_v2.prediction_data.blend_shape_weight;
+      cout << "Lip Ver2:" << endl;
+      for (int i = 0; i < ViveSR::anipal::Lip::blend_shape_nums; i++) {
+        cout << weightings[i] << endl;
+      }
+    }
+  }
 }
 
 bool MyClass::next_eye_data()
@@ -192,4 +212,151 @@ double MyClass::get_pupil_size(int eye)
 double MyClass::get_eye_openness(int eye)
 {
 	return get_eye(eye)->eye_openness;
+}
+std::string godot::MyClass::CovertErrorCode(int error) {
+
+  std::string result = "";
+  switch (error) {
+  case (ViveSR::Error::RUNTIME_NOT_FOUND):
+    result = "RUNTIME_NOT_FOUND";
+    break;
+  case (ViveSR::Error::NOT_INITIAL):
+    result = "NOT_INITIAL";
+    break;
+  case (ViveSR::Error::FAILED):
+    result = "FAILED";
+    break;
+  case (ViveSR::Error::WORK):
+    result = "WORK";
+    break;
+  case (ViveSR::Error::INVALID_INPUT):
+    result = "INVALID_INPUT";
+    break;
+  case (ViveSR::Error::FILE_NOT_FOUND):
+    result = "FILE_NOT_FOUND";
+    break;
+  case (ViveSR::Error::DATA_NOT_FOUND):
+    result = "DATA_NOT_FOUND";
+    break;
+  case (ViveSR::Error::UNDEFINED):
+    result = "UNDEFINED";
+    break;
+  case (ViveSR::Error::INITIAL_FAILED):
+    result = "INITIAL_FAILED";
+    break;
+  case (ViveSR::Error::NOT_IMPLEMENTED):
+    result = "NOT_IMPLEMENTED";
+    break;
+  case (ViveSR::Error::NULL_POINTER):
+    result = "NULL_POINTER";
+    break;
+  case (ViveSR::Error::OVER_MAX_LENGTH):
+    result = "OVER_MAX_LENGTH";
+    break;
+  case (ViveSR::Error::FILE_INVALID):
+    result = "FILE_INVALID";
+    break;
+  case (ViveSR::Error::UNINSTALL_STEAM):
+    result = "UNINSTALL_STEAM";
+    break;
+  case (ViveSR::Error::MEMCPY_FAIL):
+    result = "MEMCPY_FAIL";
+    break;
+  case (ViveSR::Error::NOT_MATCH):
+    result = "NOT_MATCH";
+    break;
+  case (ViveSR::Error::NODE_NOT_EXIST):
+    result = "NODE_NOT_EXIST";
+    break;
+  case (ViveSR::Error::UNKONW_MODULE):
+    result = "UNKONW_MODULE";
+    break;
+  case (ViveSR::Error::MODULE_FULL):
+    result = "MODULE_FULL";
+    break;
+  case (ViveSR::Error::UNKNOW_TYPE):
+    result = "UNKNOW_TYPE";
+    break;
+  case (ViveSR::Error::INVALID_MODULE):
+    result = "INVALID_MODULE";
+    break;
+  case (ViveSR::Error::INVALID_TYPE):
+    result = "INVALID_TYPE";
+    break;
+  case (ViveSR::Error::MEMORY_NOT_ENOUGH):
+    result = "MEMORY_NOT_ENOUGH";
+    break;
+  case (ViveSR::Error::BUSY):
+    result = "BUSY";
+    break;
+  case (ViveSR::Error::NOT_SUPPORTED):
+    result = "NOT_SUPPORTED";
+    break;
+  case (ViveSR::Error::INVALID_VALUE):
+    result = "INVALID_VALUE";
+    break;
+  case (ViveSR::Error::COMING_SOON):
+    result = "COMING_SOON";
+    break;
+  case (ViveSR::Error::INVALID_CHANGE):
+    result = "INVALID_CHANGE";
+    break;
+  case (ViveSR::Error::TIMEOUT):
+    result = "TIMEOUT";
+    break;
+  case (ViveSR::Error::DEVICE_NOT_FOUND):
+    result = "DEVICE_NOT_FOUND";
+    break;
+  case (ViveSR::Error::INVALID_DEVICE):
+    result = "INVALID_DEVICE";
+    break;
+  case (ViveSR::Error::NOT_AUTHORIZED):
+    result = "NOT_AUTHORIZED";
+    break;
+  case (ViveSR::Error::ALREADY):
+    result = "ALREADY";
+    break;
+  case (ViveSR::Error::INTERNAL):
+    result = "INTERNAL";
+    break;
+  case (ViveSR::Error::CONNECTION_FAILED):
+    result = "CONNECTION_FAILED";
+    break;
+  case (ViveSR::Error::ALLOCATION_FAILED):
+    result = "ALLOCATION_FAILED";
+    break;
+  case (ViveSR::Error::OPERATION_FAILED):
+    result = "OPERATION_FAILED";
+    break;
+  case (ViveSR::Error::NOT_AVAILABLE):
+    result = "NOT_AVAILABLE";
+    break;
+  case (ViveSR::Error::CALLBACK_IN_PROGRESS):
+    result = "CALLBACK_IN_PROGRESS";
+    break;
+  case (ViveSR::Error::SERVICE_NOT_FOUND):
+    result = "SERVICE_NOT_FOUND";
+    break;
+  case (ViveSR::Error::DISABLED_BY_USER):
+    result = "DISABLED_BY_USER";
+    break;
+  case (ViveSR::Error::EULA_NOT_ACCEPT):
+    result = "EULA_NOT_ACCEPT";
+    break;
+  case (ViveSR::Error::RUNTIME_NO_RESPONSE):
+    result = "RUNTIME_NO_RESPONSE";
+    break;
+  case (ViveSR::Error::OPENCL_NOT_SUPPORT):
+    result = "OPENCL_NOT_SUPPORT";
+    break;
+  case (ViveSR::Error::NOT_SUPPORT_EYE_TRACKING):
+    result = "NOT_SUPPORT_EYE_TRACKING";
+    break;
+  case (ViveSR::Error::LIP_NOT_SUPPORT):
+    result = "LIP_NOT_SUPPORT";
+    break;
+  default:
+    result = "No such error code";
+  }
+  return result;
 }
