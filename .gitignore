@@ -17,3 +17,5 @@ native/*/*.obj
 bin/win64
 bin/osx
 bin/x11
+
+*.pdb
