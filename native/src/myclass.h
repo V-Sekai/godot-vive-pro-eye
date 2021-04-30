@@ -29,14 +29,16 @@
 #pragma once
 
 #include <Godot.hpp>
-#include <Spatial.hpp>
 #include <Material.hpp>
 #include <MeshInstance.hpp>
+#include <Spatial.hpp>
+
 
 #include "SRanipal.h"
+#include "SRanipal_Enums.h"
 #include "SRanipal_Eye.h"
 #include "SRanipal_Lip.h"
-#include "SRanipal_Enums.h"
+
 
 #include <boost/lockfree/spsc_queue.hpp>
 #include <optional>
@@ -55,19 +57,20 @@ private:
 	ViveSR::anipal::Lip::LipData_v2 lip_data_v2;
 
 	/** gives the left, combined or right eye data for eye = -1/0/1 */
-	const ViveSR::anipal::Eye::SingleEyeData* get_eye(int eye);
+	const ViveSR::anipal::Eye::SingleEyeData *get_eye(int eye);
 
-	boost::lockfree::spsc_queue<ViveSR::anipal::Eye::EyeData, boost::lockfree::capacity<2>> queue;
+	boost::lockfree::spsc_queue<ViveSR::anipal::Eye::EyeData, boost::lockfree::capacity<2> > queue;
 	// queue MUST be listed before poll_thread. It is important that poll_thread
 	// gets destructed PRIOR to queue!
 	std::thread poll_eyes_thread; // required for getting the full 120Hz from the HMD
-	std::thread poll_lips_thread; 
+	std::thread poll_lips_thread;
 
 	void poll_eyes();
-    void poll_lips();
+	void poll_lips();
+
 public:
 	static void _register_methods();
-	
+
 	/** Updates the internal state to the latest eye data available.
 		Returns true if the eye data was updated or false if no new data
 		was available.
@@ -124,7 +127,7 @@ public:
 	~MyClass();
 	void _init();
 	void _ready();
-    std::string CovertErrorCode(int error);
+	std::string CovertErrorCode(int error);
 };
 
-}
+} // namespace godot

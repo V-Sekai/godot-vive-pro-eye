@@ -57,7 +57,7 @@ opts.Add(PathVariable('target_name', 'The library name.', 'libgdexample', PathVa
 godot_headers_path = "godot-cpp/godot_headers/"
 cpp_bindings_path = "godot-cpp/"
 cpp_library = "libgodot-cpp"
-windows_boost_path = "C:\\local\\boost_1_69_0"
+windows_boost_path = "C:\\local\\boost_1_76_0"
 
 # only support 64 at this time..
 bits = 64
