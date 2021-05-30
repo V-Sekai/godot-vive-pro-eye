@@ -71,20 +71,20 @@ instead to only see errors from the actual compiling phase.
 
 ## Running
 
-If the build has succeeded, the project can be opened in godot. Either run
+If the build has succeeded, you can open the project in godot. Either run
 `path/to/godot -e`, while being in the repo's main directory, or open the
 project from godot's GUI.
 
 You may need to install the SRanipal runtime, which is available from the SDK download
 page. You may need to perform a calibration first.
 
-The demo application shows a scene with some objects, and three colored spheres.
+The demo application shows a scene with some objects and three coloured spheres.
 These spheres follow your gaze and correspond to your right, left, and combined gaze.
 If you close one of the eyes, the corresponding sphere's size gets gradually smaller.
 
 # Documentation
 
-Sorry, currrently you can only read the comments in the [header file](native/src/myclass.h).
+Sorry, currrently, you can only read the comments in the [header file](native/src/myclass.h).
 
 For use in Godot, the method names are the same. Just create a _Node_-object and attach
 the _MyClass.gdns_ script to it. Then you can call `ThatObject.update_eye_data()` and
