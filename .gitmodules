@@ -3,4 +3,4 @@
 	url = https://github.com/GodotNativeTools/godot-cpp
 [submodule "native/SRanipal_SDK"]
 	path = native/SRanipal_SDK
-	url = git@github.com:fire/vive_sranipal_sdk.git
+	url = git@github.com:V-Sekai/vive_sranipal_sdk.git
