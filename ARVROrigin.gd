@@ -24,10 +24,10 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-extends ARVROrigin
+extends XROrigin3D
 
 func _ready():
-	var interface = ARVRServer.find_interface("OpenVR")
+	var interface = XRServer.find_interface("OpenVR")
 	if interface and interface.initialize():
 		get_viewport().arvr = true
 		get_viewport().hdr = false
