@@ -1,8 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://ctel2cc0cc23n"]
+[gd_scene load_steps=7 format=3 uid="uid://caqjij1b8t27k"]
 
-[ext_resource type="Script" path="res://XROrigin.gd" id="1"]
 [ext_resource type="Script" path="res://EyeTrackingRig.gd" id="2"]
-[ext_resource type="Script" path="res://MyClass.gdns" id="3"]
+[ext_resource type="Script" path="res://ARVROrigin.gd" id="3"]
 
 [sub_resource type="SphereMesh" id="1"]
 radius = 0.025
@@ -19,46 +18,46 @@ rings = 16
 [node name="Spatial" type="Node3D"]
 script = null
 
-[node name="XROrigin" type="Node" parent="."]
-script = ExtResource( "1" )
-
-[node name="XRCamera" type="Node" parent="XROrigin"]
-script = null
-
-[node name="EyeTrackingRig" type="Node3D" parent="XROrigin/XRCamera"]
-script = ExtResource( "2" )
-
-[node name="EyeTracker" type="Node" parent="XROrigin/XRCamera/EyeTrackingRig"]
+[node name="XROrigin3D" type="Node" parent="."]
 script = ExtResource( "3" )
 
-[node name="LeftMarker" type="MeshInstance3D" parent="XROrigin/XRCamera/EyeTrackingRig"]
+[node name="XRCamera" type="Node" parent="XROrigin3D"]
+script = null
+
+[node name="EyeTrackingRig" type="Node3D" parent="XROrigin3D/XRCamera"]
+script = ExtResource( "2" )
+
+[node name="EyeTracker" type="Node" parent="XROrigin3D/XRCamera/EyeTrackingRig"]
+script = ExtResource( "3" )
+
+[node name="LeftMarker" type="MeshInstance3D" parent="XROrigin3D/XRCamera/EyeTrackingRig"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 mesh = SubResource( "1" )
 surface_material_override/0 = null
 script = null
 
-[node name="RightMarker" type="MeshInstance3D" parent="XROrigin/XRCamera/EyeTrackingRig"]
+[node name="RightMarker" type="MeshInstance3D" parent="XROrigin3D/XRCamera/EyeTrackingRig"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 mesh = SubResource( "1" )
 surface_material_override/0 = null
 script = null
 
-[node name="CombinedMarker" type="MeshInstance3D" parent="XROrigin/XRCamera/EyeTrackingRig"]
+[node name="CombinedMarker" type="MeshInstance3D" parent="XROrigin3D/XRCamera/EyeTrackingRig"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 mesh = SubResource( "1" )
 surface_material_override/0 = null
 script = null
 
-[node name="HeadLight" type="SpotLight3D" parent="XROrigin/XRCamera"]
+[node name="HeadLight" type="SpotLight3D" parent="XROrigin3D/XRCamera"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.294615, 0)
 spot_range = 18.7688
 spot_angle = 8.28695
 script = null
 
-[node name="XRController" type="Node" parent="XROrigin"]
+[node name="XRController" type="Node" parent="XROrigin3D"]
 script = null
 
-[node name="XRController2" type="Node" parent="XROrigin"]
+[node name="XRController2" type="Node" parent="XROrigin3D"]
 script = null
 
 [node name="Stuff" type="Node3D" parent="."]
