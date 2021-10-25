@@ -28,26 +28,26 @@
 
 #pragma once
 
-#include <Godot.hpp>
-#include <Material.hpp>
-#include <MeshInstance.hpp>
-#include <Spatial.hpp>
-
+#include <godot_cpp/classes/material.hpp>
+#include <godot_cpp/classes/mesh_instance3d.hpp>
+#include <godot_cpp/classes/node3d.hpp>
 
 #include "SRanipal.h"
 #include "SRanipal_Enums.h"
 #include "SRanipal_Eye.h"
 #include "SRanipal_Lip.h"
 
-
-#include <boost/lockfree/spsc_queue.hpp>
+#include "readerwriterqueue.h"
 #include <optional>
 #include <thread>
 
 namespace godot {
 
-class MyClass : public godot::Node {
-	GODOT_CLASS(MyClass, godot::Node)
+class MyClass : public Node3D {
+	GDCLASS(MyClass, Node3D);
+
+protected:
+	static void _bind_methods();
 
 private:
 	bool data_valid = false;
@@ -59,9 +59,7 @@ private:
 	/** gives the left, combined or right eye data for eye = -1/0/1 */
 	const ViveSR::anipal::Eye::SingleEyeData *get_eye(int eye);
 
-	boost::lockfree::spsc_queue<ViveSR::anipal::Eye::EyeData, boost::lockfree::capacity<2> > queue;
-	// queue MUST be listed before poll_thread. It is important that poll_thread
-	// gets destructed PRIOR to queue!
+	moodycamel::ReaderWriterQueue<ViveSR::anipal::Eye::EyeData> queue;
 	std::thread poll_eyes_thread; // required for getting the full 120Hz from the HMD
 	std::thread poll_lips_thread;
 
@@ -69,8 +67,6 @@ private:
 	void poll_lips();
 
 public:
-	static void _register_methods();
-
 	/** Updates the internal state to the latest eye data available.
 		Returns true if the eye data was updated or false if no new data
 		was available.
@@ -94,14 +90,14 @@ public:
 	bool next_eye_data();
 
 	/** returns the eye gaze origin in meters.
-	    The Vector3 returned follows the godot convention, i.e.
+		The Vector3 returned follows the godot convention, i.e.
 		right/up/viewing direction = +x / +y / -z.
 		Note that this is different from the SRanipal convention.
 	*/
 	Vector3 get_eyeball_position(int eye);
 
 	/** returns the normalized eye gaze direction.
-	    The Vector3 returned follows the godot convention, i.e.
+		The Vector3 returned follows the godot convention, i.e.
 		right/up/viewing direction = +x / +y / -z.
 		Note that this is different from the SRanipal convention.
 	*/
@@ -114,7 +110,7 @@ public:
 	double get_timestamp();
 
 	/** returns the estimated gaze distance based on the convergence
-	    of the two eyes. returns -1 if unknown */
+		of the two eyes. returns -1 if unknown */
 	double get_gaze_distance();
 
 	/** returns the pupil diameter in mm */

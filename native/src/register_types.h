@@ -1,7 +1,4 @@
 /*
- * This file is part of godot-vive-pro-eye, a Godot 3 driver for the HTC
- * Vive Pro Eye eye tracking hardware.
- *
  * Copyright (c) 2019 Lehrstuhl für Informatik 2,
  * Friedrich-Alexander-Universität Erlangen-Nürnberg (FAU)
  * Author: Florian Jung (florian.jung@fau.de)
@@ -26,18 +23,10 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "myclass.h"
+#ifndef REGISTER_TYPES_H
+#define REGISTER_TYPES_H
 
-extern "C" void GDN_EXPORT godot_gdnative_init(godot_gdnative_init_options *o) {
-	godot::Godot::gdnative_init(o);
-}
+void register_types();
+void unregister_types();
 
-extern "C" void GDN_EXPORT godot_gdnative_terminate(godot_gdnative_terminate_options *o) {
-	godot::Godot::gdnative_terminate(o);
-}
-
-extern "C" void GDN_EXPORT godot_nativescript_init(void *handle) {
-	godot::Godot::nativescript_init(handle);
-
-	godot::register_class<godot::MyClass>();
-}
+#endif

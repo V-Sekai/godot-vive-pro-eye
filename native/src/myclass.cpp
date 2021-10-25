@@ -36,8 +36,6 @@
 #include "SRanipal_Eye.h"
 #include "SRanipal_Lip.h"
 
-
-#include <boost/lockfree/spsc_queue.hpp>
 #include <chrono>
 #include <thread>
 
@@ -45,18 +43,16 @@ using namespace godot;
 using namespace std;
 using namespace ViveSR;
 
-void MyClass::_register_methods() {
-#define reg(name) register_method(#name, &MyClass::name)
-	reg(update_eye_data);
-	reg(next_eye_data);
-	reg(get_eyeball_position);
-	reg(get_gaze_direction);
-	reg(is_user_present);
-	reg(get_timestamp);
-	reg(get_gaze_distance);
-	reg(get_pupil_size);
-	reg(get_eye_openness);
-	reg(_ready);
+void MyClass::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("update_eye_data"), &MyClass::update_eye_data);
+	ClassDB::bind_method(D_METHOD("next_eye_data"), &MyClass::next_eye_data);
+	ClassDB::bind_method(D_METHOD("get_eyeball_position"), &MyClass::get_eyeball_position);
+	ClassDB::bind_method(D_METHOD("get_gaze_direction"), &MyClass::get_gaze_direction);
+	ClassDB::bind_method(D_METHOD("is_user_present"), &MyClass::is_user_present);
+	ClassDB::bind_method(D_METHOD("get_timestamp"), &MyClass::get_timestamp);
+	ClassDB::bind_method(D_METHOD("get_gaze_distance"), &MyClass::get_gaze_distance);
+	ClassDB::bind_method(D_METHOD("get_pupil_size"), &MyClass::get_pupil_size);
+	ClassDB::bind_method(D_METHOD("get_eye_openness"), &MyClass::get_eye_openness);
 }
 
 void MyClass::_init() {
@@ -110,7 +106,7 @@ void MyClass::poll_eyes() {
 				if (delta > 1) {
 					cout << "frame delta: " << poll_eye_data.frame_sequence - prev_frame << endl;
 				}
-				bool success = queue.push(poll_eye_data);
+				bool success = queue.enqueue(poll_eye_data);
 				if (!success) {
 					cout << "ringbuf overflow" << endl;
 				}
@@ -136,9 +132,10 @@ void godot::MyClass::poll_lips() {
 }
 
 bool MyClass::next_eye_data() {
-	bool success = queue.pop(eye_data);
-	if (success)
+	bool success = queue.try_dequeue(eye_data);
+	if (success) {
 		data_valid = true;
+	}
 	return success;
 }
 
@@ -152,9 +149,15 @@ bool MyClass::update_eye_data() {
 const ViveSR::anipal::Eye::SingleEyeData *MyClass::get_eye(int eye) {
 	ViveSR::anipal::Eye::SingleEyeData *e;
 	switch (eye) {
-		case -1: e = &eye_data.verbose_data.left; break;
-		case 1: e = &eye_data.verbose_data.right; break;
-		default: e = &eye_data.verbose_data.combined.eye_data; break;
+		case -1:
+			e = &eye_data.verbose_data.left;
+			break;
+		case 1:
+			e = &eye_data.verbose_data.right;
+			break;
+		default:
+			e = &eye_data.verbose_data.combined.eye_data;
+			break;
 	}
 	return e;
 }
@@ -194,7 +197,6 @@ double MyClass::get_eye_openness(int eye) {
 	return get_eye(eye)->eye_openness;
 }
 std::string godot::MyClass::CovertErrorCode(int error) {
-
 	std::string result = "";
 	switch (error) {
 		case (ViveSR::Error::RUNTIME_NOT_FOUND):

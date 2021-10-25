@@ -52,12 +52,12 @@ opts.Add(EnumVariable('p', "Compilation target, alias for 'platform'", '', ['', 
 opts.Add(BoolVariable('use_llvm', "Use the LLVM / Clang compiler", 'no'))
 opts.Add(PathVariable('target_path', 'The path where the lib is installed.', '../bin/'))
 opts.Add(PathVariable('target_name', 'The library name.', 'libgdexample', PathVariable.PathAccept))
+opts.Add(BoolVariable('use_mingw', "Cross-compile for Windows", 'no'))
 
 # Local dependency paths, adapt them to your setup
-godot_headers_path = "godot-cpp/godot_headers/"
+godot_headers_path = "godot-cpp/godot-headers/"
 cpp_bindings_path = "godot-cpp/"
 cpp_library = "libgodot-cpp"
-windows_boost_path = "C:\\local\\boost_1_76_0"
 
 # only support 64 at this time..
 bits = 64
@@ -99,7 +99,17 @@ elif env['platform'] in ('x11', 'linux'):
         env.Append(CCFLAGS = ['-fPIC', '-g3','-Og', '-std=c++17'])
     else:
         env.Append(CCFLAGS = ['-fPIC', '-g','-O3', '-std=c++17'])
-
+elif env['platform'] == "windows" and env["use_mingw"]:
+    # Don't Clone the environment. Because otherwise, SCons will pick up msvc stuff.
+    env = Environment(ENV=os.environ, tools=["mingw"])
+    opts.Update(env)
+    # env = env.Clone(tools=['mingw']) 
+    env.Append(CCFLAGS = ['-std=c++17'])
+    env.Append(LINKFLAGS=[ 
+        '-static-libgcc',
+        '-static-libstdc++',
+    ])
+    cpp_library += '.windows'
 elif env['platform'] == "windows":
     env['target_path'] += 'win64/'
     cpp_library += '.windows'
@@ -113,17 +123,6 @@ elif env['platform'] == "windows":
         env.Append(LINKFLAGS = ['/DEBUG'])
     else:
         env.Append(CCFLAGS = ['-O2', '-EHsc', '-DNDEBUG', '-MD'])
-
-    # silence stupid warnings about boost
-    env.Append(CCFLAGS = ["-D_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING", "-D_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING", "-D_SCL_SECURE_NO_WARNINGS"])
-    
-    env.Append(CPPPATH=[windows_boost_path])# TODO: add your windows-specific include paths here
-    #env.Append(LIBPATH=...) # TODO: add your windows specific include paths here
-
-
-
-
-
 
 # sensible warning flags for g++ and clang++
 if env['CXX'].endswith("clang++"):
@@ -162,16 +161,15 @@ else:
 
 cpp_library += '.' + str(bits)
 
-
-
-
 # make sure our binding library is properly included
 env.Append(CPPPATH=[
 	'.',
+    'thirdparty',
 	godot_headers_path,
 	cpp_bindings_path + 'include/',
 	cpp_bindings_path + 'include/core/',
 	cpp_bindings_path + 'include/gen/',
+    cpp_bindings_path + 'gen/include/',
 	"SRanipal_SDK/include"
 ]) # TODO: add your include paths here. (or above, if they are windows-only)
 
@@ -183,21 +181,15 @@ env.Append(LIBPATH=[
 env.Append(LIBS=[
 	cpp_library,
 	"SRanipal"
-]) # TODO: add your libraries here
+])
 
-# tweak this if you want to use different folders, or more folders, to store your source code in.
-#env.Append(CPPPATH=['src/'])
 sources = [
-    "src/gdlibrary.cpp",
+    "src/register_types.cpp",
     "src/myclass.cpp"
 ]
 
 library = env.SharedLibrary(target=env['target_path'] + env['target_name'] , source=sources)
 install_sranipal = env.Install(env['target_path'], ["./SRanipal_SDK/bin/%s" % f for f in ["HTC_License", "libHTC_License.dll", "nanomsg.dll", "SRanipal.dll", "SRWorks_Log.dll", "ViveSR_Client.dll"]])
-
-if env['platform'] == "windows":
-	buildtarget = [s for s in library if str(s).endswith('dll')]
-	msvs = env.MSVSProject(target="project"+env['MSVSPROJECTSUFFIX'], srcs=sources, incs=Glob("src/*.h",strings=True)+Glob("src/*.hpp",strings=True), buildtarget=buildtarget, variant="debug|x64", cmdargs="p=windows target=debug")
 
 Default([library, install_sranipal])
 

@@ -21,9 +21,9 @@
                 "cwd": "native"
             },
             "command": "scons platform=windows target=debug -j8 use_mingw=yes",
-            "dependsOn": [
-                "Build godot-cpp"
-            ],
+            // "dependsOn": [
+            //     "Build godot-cpp"
+            // ],
             "problemMatcher": [
                 "$gcc"
             ],
