@@ -1,0 +1,33 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build godot-cpp",
+            "type": "shell",
+            "options": {
+                "cwd": "native/godot-cpp"
+            },
+            "command": "scons platform=windows target=release -j8 generate_bindings=yes use_mingw=yes",
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "Build gdextension",
+            "type": "shell",
+            "command": "scons platform=windows target=release -j8 use_mingw=yes",
+            "dependsOn": [
+                "Build godot-cpp"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
