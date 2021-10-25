@@ -29,7 +29,7 @@
 #include <iostream>
 #include <string>
 
-#include "myclass.h"
+#include "face_eye.h"
 
 #include "SRanipal.h"
 #include "SRanipal_Enums.h"
@@ -43,29 +43,29 @@ using namespace godot;
 using namespace std;
 using namespace ViveSR;
 
-void MyClass::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("update_eye_data"), &MyClass::update_eye_data);
-	ClassDB::bind_method(D_METHOD("next_eye_data"), &MyClass::next_eye_data);
-	ClassDB::bind_method(D_METHOD("get_eyeball_position"), &MyClass::get_eyeball_position);
-	ClassDB::bind_method(D_METHOD("get_gaze_direction"), &MyClass::get_gaze_direction);
-	ClassDB::bind_method(D_METHOD("is_user_present"), &MyClass::is_user_present);
-	ClassDB::bind_method(D_METHOD("get_timestamp"), &MyClass::get_timestamp);
-	ClassDB::bind_method(D_METHOD("get_gaze_distance"), &MyClass::get_gaze_distance);
-	ClassDB::bind_method(D_METHOD("get_pupil_size"), &MyClass::get_pupil_size);
-	ClassDB::bind_method(D_METHOD("get_eye_openness"), &MyClass::get_eye_openness);
+void FaceEye::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("update_eye_data"), &FaceEye::update_eye_data);
+	ClassDB::bind_method(D_METHOD("next_eye_data"), &FaceEye::next_eye_data);
+	ClassDB::bind_method(D_METHOD("get_eyeball_position"), &FaceEye::get_eyeball_position);
+	ClassDB::bind_method(D_METHOD("get_gaze_direction"), &FaceEye::get_gaze_direction);
+	ClassDB::bind_method(D_METHOD("is_user_present"), &FaceEye::is_user_present);
+	ClassDB::bind_method(D_METHOD("get_timestamp"), &FaceEye::get_timestamp);
+	ClassDB::bind_method(D_METHOD("get_gaze_distance"), &FaceEye::get_gaze_distance);
+	ClassDB::bind_method(D_METHOD("get_pupil_size"), &FaceEye::get_pupil_size);
+	ClassDB::bind_method(D_METHOD("get_eye_openness"), &FaceEye::get_eye_openness);
 }
 
-void MyClass::_init() {
+void FaceEye::_init() {
 	lip_data_v2.image = lip_image;
 }
 
-void MyClass::_ready() {
-	cout << "MyClass::_ready()" << endl;
+void FaceEye::_ready() {
+	cout << "FaceEye::_ready()" << endl;
 	ViveSR::Error err = static_cast<ViveSR::Error>(ViveSR::anipal::Initial(ViveSR::anipal::Eye::ANIPAL_TYPE_EYE, NULL));
 	switch (err) {
 		case ViveSR::Error::WORK:
 			cout << "Successfully initialized SRanipal." << endl;
-			poll_eyes_thread = std::thread(&MyClass::poll_eyes, this);
+			poll_eyes_thread = std::thread(&FaceEye::poll_eyes, this);
 			break;
 		case ViveSR::Error::RUNTIME_NOT_FOUND:
 			cout << "Failed to initialize SRanipal: Runtime not found." << endl;
@@ -76,22 +76,22 @@ void MyClass::_ready() {
 	int32_t error = ViveSR::anipal::Initial(ViveSR::anipal::Lip::ANIPAL_TYPE_LIP_V2, NULL);
 	if (error == ViveSR::Error::WORK) {
 		printf("Successfully initialize version2 Lip engine.\n");
-		poll_lips_thread = std::thread(&MyClass::poll_lips, this);
+		poll_lips_thread = std::thread(&FaceEye::poll_lips, this);
 	} else {
 		printf("Fail to initialize version2 Lip engine. please refer the code %d %s.\n", error, CovertErrorCode(error).c_str());
 	}
 }
 
-MyClass::MyClass() {
-	cout << "MyClass ctor" << endl;
+FaceEye::FaceEye() {
+	cout << "FaceEye ctor" << endl;
 }
 
-MyClass::~MyClass() {
+FaceEye::~FaceEye() {
 	ViveSR::anipal::Release(ViveSR::anipal::Lip::ANIPAL_TYPE_LIP_V2);
-	cout << "MyClass dtor" << endl;
+	cout << "FaceEye dtor" << endl;
 }
 
-void MyClass::poll_eyes() {
+void FaceEye::poll_eyes() {
 	ViveSR::anipal::Eye::EyeData poll_eye_data;
 
 	while (true) {
@@ -115,7 +115,7 @@ void MyClass::poll_eyes() {
 	}
 }
 
-void godot::MyClass::poll_lips() {
+void godot::FaceEye::poll_lips() {
 	ViveSR::anipal::Eye::EyeData poll_eye_data;
 
 	while (true) {
@@ -131,7 +131,7 @@ void godot::MyClass::poll_lips() {
 	}
 }
 
-bool MyClass::next_eye_data() {
+bool FaceEye::next_eye_data() {
 	bool success = queue.try_dequeue(eye_data);
 	if (success) {
 		data_valid = true;
@@ -139,14 +139,14 @@ bool MyClass::next_eye_data() {
 	return success;
 }
 
-bool MyClass::update_eye_data() {
+bool FaceEye::update_eye_data() {
 	bool success = false;
 	while (next_eye_data())
 		success = true;
 	return success;
 }
 
-const ViveSR::anipal::Eye::SingleEyeData *MyClass::get_eye(int eye) {
+const ViveSR::anipal::Eye::SingleEyeData *FaceEye::get_eye(int eye) {
 	ViveSR::anipal::Eye::SingleEyeData *e;
 	switch (eye) {
 		case -1:
@@ -166,37 +166,37 @@ static godot::Vector3 convert_vec(const ViveSR::anipal::Eye::Vector3 &v) {
 	return godot::Vector3(-v.x, v.y, -v.z);
 }
 
-Vector3 MyClass::get_eyeball_position(int eye) {
+Vector3 FaceEye::get_eyeball_position(int eye) {
 	return convert_vec(get_eye(eye)->gaze_origin_mm) / 1000.0;
 }
 
-Vector3 MyClass::get_gaze_direction(int eye) {
+Vector3 FaceEye::get_gaze_direction(int eye) {
 	return convert_vec(get_eye(eye)->gaze_direction_normalized);
 }
 
-bool MyClass::is_user_present() {
+bool FaceEye::is_user_present() {
 	return eye_data.no_user;
 }
 
-double MyClass::get_timestamp() {
+double FaceEye::get_timestamp() {
 	return eye_data.timestamp;
 }
 
-double MyClass::get_gaze_distance() {
+double FaceEye::get_gaze_distance() {
 	if (eye_data.verbose_data.combined.convergence_distance_validity)
 		return eye_data.verbose_data.combined.convergence_distance_mm / 1000.;
 	else
 		return -1.;
 }
 
-double MyClass::get_pupil_size(int eye) {
+double FaceEye::get_pupil_size(int eye) {
 	return get_eye(eye)->pupil_diameter_mm;
 }
 
-double MyClass::get_eye_openness(int eye) {
+double FaceEye::get_eye_openness(int eye) {
 	return get_eye(eye)->eye_openness;
 }
-std::string godot::MyClass::CovertErrorCode(int error) {
+std::string godot::FaceEye::CovertErrorCode(int error) {
 	std::string result = "";
 	switch (error) {
 		case (ViveSR::Error::RUNTIME_NOT_FOUND):

@@ -30,13 +30,12 @@
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
-
-#include "myclass.h"
+#include "face_eye.h"
 
 using namespace godot;
 
 void register_types() {
-	ClassDB::register_class<MyClass>();
+	ClassDB::register_class<FaceEye>();
 }
 
 void unregister_types() {

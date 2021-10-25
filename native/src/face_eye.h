@@ -43,8 +43,8 @@
 
 namespace godot {
 
-class MyClass : public Node3D {
-	GDCLASS(MyClass, Node3D);
+class FaceEye : public Node3D {
+	GDCLASS(FaceEye, Node3D);
 
 protected:
 	static void _bind_methods();
@@ -119,8 +119,8 @@ public:
 	/** returns whether the eye is open (1) or closed(0) or in between */
 	double get_eye_openness(int eye);
 
-	MyClass();
-	~MyClass();
+	FaceEye();
+	~FaceEye();
 	void _init();
 	void _ready();
 	std::string CovertErrorCode(int error);
