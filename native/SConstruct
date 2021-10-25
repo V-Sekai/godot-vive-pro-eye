@@ -171,7 +171,7 @@ env.Append(CPPPATH=[
 	cpp_bindings_path + 'include/gen/',
     cpp_bindings_path + 'gen/include/',
 	"SRanipal_SDK/include"
-]) # TODO: add your include paths here. (or above, if they are windows-only)
+])
 
 env.Append(LIBPATH=[
 	cpp_bindings_path + 'bin/',
