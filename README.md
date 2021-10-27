@@ -22,11 +22,11 @@ This project provides a Godot driver for the HTC Vive Pro Eye and Facial tracker
 
 ### Dependencies
 
-Install the **scons** build system.
+**WARNING WORK IN PROGRESS**
 
-Install the **boost** libraries to `C:\local\boost_1_76_0`. If you choosea
-different directory, adjust the `windows_boost_path` variable in `SConstruct`
-first.
+**Not working as of 2021-10-27**
+
+Install the **scons** build system.
 
 Download and extract the
 [SRanipal SDK](https://developer.vive.com/resources/knowledgebase/vive-sranipal-sdk/)'s
