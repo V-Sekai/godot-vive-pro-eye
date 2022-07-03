@@ -24,7 +24,7 @@ This project provides a Godot driver for the HTC Vive Pro Eye and Facial tracker
 
 **WARNING WORK IN PROGRESS**
 
-**Not working as of 2021-10-27**
+**Not working as of 2022-07-03**
 
 Install the **scons** build system.
 
