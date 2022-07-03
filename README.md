@@ -51,7 +51,7 @@ scons -j8 p=windows headers=godot_headers generate_bindings=yes bits=64
 After having prepared everything, type into a Visual Studio Native Tools prompt:
 
 ```
-scons p=windows
+scons p=windows use_mingw=yes use_llvm=yes
 ```
 
 This should create `bin\win64\libgdexample.dll`

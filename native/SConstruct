@@ -1,6 +1,6 @@
 #!python
 
-# This file is part of godot-vive-pro-eye, a Godot 3 driver for the HTC
+# This file is part of godot-vive-pro-eye, a Godot Engine 4 driver for the HTC
 # Vive Pro Eye eye tracking hardware.
 #
 # Copyright (c) 2019 Lehrstuhl für Informatik 2,
@@ -28,6 +28,9 @@
 
 import os, subprocess
 
+
+env = SConscript("godot-cpp/SConstruct")
+
 # first check whether the SRanipal SDK has been installed correctly.
 
 sranipal_bin_found = os.path.isdir("./SRanipal_SDK/bin")
@@ -41,9 +44,6 @@ if not (sranipal_bin_found and sranipal_inc_found and sranipal_lib_found):
 
 
 opts = Variables([], ARGUMENTS)
-
-# Gets the standard flags CC, CCX, etc.
-env = DefaultEnvironment()
 
 # Define our options
 opts.Add(EnumVariable('target', "Compilation target", 'debug', ['d', 'debug', 'r', 'release']))
@@ -159,7 +159,7 @@ if env['target'] in ('debug', 'd'):
 else:
     cpp_library += '.release'
 
-cpp_library += '.' + str(bits)
+cpp_library += '.' + "x86_64"
 
 # make sure our binding library is properly included
 env.Append(CPPPATH=[

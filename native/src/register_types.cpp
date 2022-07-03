@@ -25,29 +25,36 @@
 
 #include "register_types.h"
 
-#include <godot_cpp/core/binder_common.hpp>
+#include <godot/gdnative_interface.h>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/defs.hpp>
-#include <godot_cpp/variant/utility_functions.hpp>
+#include <godot_cpp/godot.hpp>
 
 #include "face_eye.h"
 
 using namespace godot;
 
-void register_types() {
-	ClassDB::register_class<FaceEye>();
+void register_face_eye_extension_types(ModuleInitializationLevel p_level) {
+	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
+		return;
+	}
+	godot::ClassDB::register_class<FaceEye>();
 }
 
-void unregister_types() {
+void unregister_face_eye_extension_typess(ModuleInitializationLevel p_level) {
+	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
+		return;
+	}
 }
+
 
 extern "C" {
-// Initialization.
 GDNativeBool GDN_EXPORT face_eye_library_init(const GDNativeInterface *p_interface, const GDNativeExtensionClassLibraryPtr p_library, GDNativeInitialization *r_initialization) {
-	godot::GDExtensionBinding::InitObject init_obj(p_interface, p_library, r_initialization);
+	GDExtensionBinding::InitObject init_obj(p_interface, p_library, r_initialization);
 
-	init_obj.register_driver_initializer(register_types);
-	init_obj.register_driver_terminator(unregister_types);
+	init_obj.register_initializer(register_face_eye_extension_types);
+	init_obj.register_terminator(unregister_face_eye_extension_typess);
+	init_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_SCENE);
 
 	return init_obj.init();
 }

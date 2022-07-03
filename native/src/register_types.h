@@ -26,7 +26,10 @@
 #ifndef REGISTER_TYPES_H
 #define REGISTER_TYPES_H
 
-void register_types();
-void unregister_types();
+#include <godot_cpp/core/class_db.hpp>
+using namespace godot;
+
+void register_face_eye_extension_types(ModuleInitializationLevel p_level);
+void unregister_face_eye_extension_types(ModuleInitializationLevel p_level);
 
 #endif
