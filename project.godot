@@ -25,3 +25,8 @@ singletons=["res://addons/godot-openvr/godot_openvr.gdnlib"]
 [rendering]
 
 environment/default_environment="res://default_env.tres"
+
+[xr]
+
+openxr/enabled=true
+shaders/enabled=true

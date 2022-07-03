@@ -17,10 +17,10 @@ rings = 16
 
 [node name="Spatial" type="Node3D"]
 
-[node name="XROrigin3D" type="Node" parent="."]
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
 script = ExtResource("3")
 
-[node name="XRCamera" type="Node" parent="XROrigin3D"]
+[node name="XRCamera" type="XRCamera3D" parent="XROrigin3D"]
 
 [node name="EyeTrackingRig" type="Node3D" parent="XROrigin3D/XRCamera"]
 script = ExtResource("2")
@@ -45,9 +45,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.294615, 0)
 spot_range = 18.7688
 spot_angle = 8.28695
 
-[node name="XRController" type="Node" parent="XROrigin3D"]
+[node name="XRController" type="XRController3D" parent="XROrigin3D"]
+tracker = &"left_hand"
 
-[node name="XRController2" type="Node" parent="XROrigin3D"]
+[node name="XRController2" type="XRController3D" parent="XROrigin3D"]
+tracker = &"right_hand"
 
 [node name="Stuff" type="Node3D" parent="."]
 
