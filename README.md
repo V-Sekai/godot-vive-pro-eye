@@ -3,7 +3,6 @@
 This project provides a Godot driver for the HTC Vive Pro Eye and Facial tracker. It uses the
 [SRanipal framework](https://developer.vive.com/resources/knowledgebase/vive-sranipal-sdk/).
 
-
 ## Directory structure
 
 ```
