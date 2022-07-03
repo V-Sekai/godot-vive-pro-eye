@@ -16,73 +16,54 @@ rings = 16
 [sub_resource type="SphereMesh" id="7"]
 
 [node name="Spatial" type="Node3D"]
-script = null
 
 [node name="XROrigin3D" type="Node" parent="."]
-script = ExtResource( "3" )
+script = ExtResource("3")
 
 [node name="XRCamera" type="Node" parent="XROrigin3D"]
-script = null
 
 [node name="EyeTrackingRig" type="Node3D" parent="XROrigin3D/XRCamera"]
-script = ExtResource( "2" )
+script = ExtResource("2")
 
 [node name="EyeTracker" type="Node" parent="XROrigin3D/XRCamera/EyeTrackingRig"]
-script = ExtResource( "3" )
+script = ExtResource("3")
 
 [node name="LeftMarker" type="MeshInstance3D" parent="XROrigin3D/XRCamera/EyeTrackingRig"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
-mesh = SubResource( "1" )
-surface_material_override/0 = null
-script = null
+mesh = SubResource("1")
 
 [node name="RightMarker" type="MeshInstance3D" parent="XROrigin3D/XRCamera/EyeTrackingRig"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
-mesh = SubResource( "1" )
-surface_material_override/0 = null
-script = null
+mesh = SubResource("1")
 
 [node name="CombinedMarker" type="MeshInstance3D" parent="XROrigin3D/XRCamera/EyeTrackingRig"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
-mesh = SubResource( "1" )
-surface_material_override/0 = null
-script = null
+mesh = SubResource("1")
 
 [node name="HeadLight" type="SpotLight3D" parent="XROrigin3D/XRCamera"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.294615, 0)
 spot_range = 18.7688
 spot_angle = 8.28695
-script = null
 
 [node name="XRController" type="Node" parent="XROrigin3D"]
-script = null
 
 [node name="XRController2" type="Node" parent="XROrigin3D"]
-script = null
 
 [node name="Stuff" type="Node3D" parent="."]
-script = null
 
 [node name="Cube" type="MeshInstance3D" parent="Stuff"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8.08437)
-mesh = SubResource( "5" )
-surface_material_override/0 = null
-script = null
+mesh = SubResource("5")
 
 [node name="Cylinder" type="MeshInstance3D" parent="Stuff"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.34567, 1, 0)
-mesh = SubResource( "6" )
-surface_material_override/0 = null
-script = null
+mesh = SubResource("6")
 
 [node name="Sphere" type="MeshInstance3D" parent="Stuff"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1, 3)
-mesh = SubResource( "7" )
-surface_material_override/0 = null
-script = null
+mesh = SubResource("7")
 
 [node name="OmniLight" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
 light_energy = 0.5
 omni_range = 12.2888
-script = null
