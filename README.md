@@ -37,12 +37,12 @@ to [the README in that directory](native/SRanipal_SDK/README.txt).
 
 Run `git submodule update --init --recursive` to initialize the submodules.
 
-Then open the shell / the Visual Studio Native Tools prompt, and do:
+Then open the Visual Studio Native Tools prompt, and do:
 
 ```
-cd godot-cpp
-scons -c      <--- cleans up any previous build
-(path/to/godot --gdnative-generate-json-api godot_api.json   <--- build up-to-date bindings. ONLY NEEDED if you know what you are doing)
+cd native/godot-cpp
+scons -c      # cleans up any previous build
+(path/to/godot --gdnative-generate-json-api godot_api.json # build up-to-date bindings. ONLY NEEDED if you know what you are doing)
 scons -j8 p=windows headers=godot_headers generate_bindings=yes bits=64
 ```
 
@@ -83,29 +83,3 @@ The code offered in this repository is licensed under the MIT license. Note, how
 that by linking in the SRanipal SDK, you have to agree to their license agreement,
 which may have an impact on the conditions you are allowed to redistribute the resulting
 binaries under.
-
-The license header that's part of every source file is reproduced below:
-
-Copyright (c) 2019 Lehrstuhl für Informatik 2,
-Friedrich-Alexander-Universität Erlangen-Nürnberg (FAU)
-
-Author: Florian Jung (florian.jung@fau.de)
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
