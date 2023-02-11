@@ -166,10 +166,10 @@ else:
     env['target_name'] += '.template_release'
 
 if env["precision"] == "double":
-    env['target_name'] += '.' + 'double'
+    env['target_name'] += '.double'
 
-cpp_library += '.' + "x86_64"
-env['target_name'] += '.' + 'x86_64.dll'
+cpp_library += '.x86_64'
+env['target_name'] += '.x86_64.dll'
 
 # make sure our binding library is properly included
 env.Append(CPPPATH=[
