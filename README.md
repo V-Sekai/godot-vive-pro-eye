@@ -42,7 +42,7 @@ Then open the Visual Studio Native Tools prompt, and do:
 cd native/godot-cpp
 scons -c      # cleans up any previous build
 (path/to/godot --gdnative-generate-json-api godot_api.json # build up-to-date bindings. ONLY NEEDED if you know what you are doing)
-scons -j8 p=windows headers=godot_headers generate_bindings=yes bits=64
+scons p=windows headers=godot_headers generate_bindings=yes bits=64
 ```
 
 ### Building
