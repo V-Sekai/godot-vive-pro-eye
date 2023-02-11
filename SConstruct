@@ -46,7 +46,7 @@ if not (sranipal_bin_found and sranipal_inc_found and sranipal_lib_found):
 opts = Variables([], ARGUMENTS)
 
 # Define our options
-opts.Add(EnumVariable('target', "Compilation target", 'debug', ['d', 'debug', 'r', 'release']))
+opts.Add(EnumVariable('target', "Compilation target", 'template_debug', ['d', 'template_debug', 'r', 'template_release']))
 opts.Add(EnumVariable('platform', "Compilation platform", '', ['', 'windows', 'x11', 'linux', 'osx']))
 opts.Add(EnumVariable('p', "Compilation target, alias for 'platform'", '', ['', 'windows', 'x11', 'linux', 'osx']))
 opts.Add(BoolVariable('use_llvm', "Use the LLVM / Clang compiler", 'no'))
@@ -55,7 +55,7 @@ opts.Add(PathVariable('target_name', 'The library name.', 'libfaceeye', PathVari
 opts.Add(BoolVariable('use_mingw', "Cross-compile for Windows", 'no'))
 
 # Local dependency paths, adapt them to your setup
-godot_headers_path = "godot-cpp/godot-headers/"
+godot_headers_path = "godot-cpp/"
 cpp_bindings_path = "godot-cpp/"
 cpp_library = "libgodot-cpp"
 
@@ -154,28 +154,29 @@ elif env['CXX'].endswith("g++"):
     )
 
 
-if env['target'] in ('debug', 'd'):
-    cpp_library += '.debug'
+if env['target'] in ('template_debug', 'd'):
+    cpp_library += '.template_debug'
 else:
-    cpp_library += '.release'
+    cpp_library += '.template_release'
 
 cpp_library += '.' + "x86_64"
 
 # make sure our binding library is properly included
 env.Append(CPPPATH=[
-	'.',
     'thirdparty',
 	godot_headers_path,
-	cpp_bindings_path + 'include/',
-	cpp_bindings_path + 'include/core/',
+    cpp_bindings_path + "include",
+    cpp_bindings_path + "gdextension",
+	cpp_bindings_path + 'include/godot-cpp/',
+	cpp_bindings_path + 'include/godot-cpp/core/',
 	cpp_bindings_path + 'include/gen/',
     cpp_bindings_path + 'gen/include/',
-	"vive_sranipal_sdk/include"
+	"thirdparty/vive_sranipal_sdk/include"
 ])
 
 env.Append(LIBPATH=[
 	cpp_bindings_path + 'bin/',
-	"vive_sranipal_sdk/lib"
+	"thirdparty/vive_sranipal_sdk/lib"
 ])
 
 env.Append(LIBS=[
