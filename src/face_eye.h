@@ -53,6 +53,7 @@ private:
 	bool data_valid = false;
 	ViveSR::anipal::Eye::EyeData eye_data;
 
+	bool lip_data_valid = false;
 	char lip_image[800 * 400];
 	ViveSR::anipal::Lip::LipData_v2 lip_data_v2;
 
@@ -90,31 +91,11 @@ public:
 	*/
 	bool next_eye_data();
 
-	bool next_lip_data() {
-		bool success = lip_queue.try_dequeue(lip_data_v2);
-		if (success) {
-			data_valid = true;
-		}
-		return success;
-	}
+	bool next_lip_data();
 
-	bool update_lip_data() {
-		bool success = false;
-		while (next_lip_data()) {
-			success = true;
-		}
-		return success;
-	}
+	bool update_lip_data();
 
-	PackedFloat32Array get_lip_data() {
-		PackedFloat32Array data;
-		data.resize(ViveSR::anipal::Lip::blend_shape_nums);
-		float *weightings = lip_data_v2.prediction_data.blend_shape_weight;
-		for (int i = 0; i < ViveSR::anipal::Lip::blend_shape_nums; i++) {
-			data[i] = weightings[i];
-		}
-		return data;
-	}
+	PackedFloat32Array get_lip_data();
 
 	/** returns the eye gaze origin in meters.
 		The Vector3 returned follows the godot convention, i.e.

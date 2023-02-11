@@ -29,7 +29,6 @@ extends XROrigin3D
 func _ready():
 	var interface = XRServer.find_interface("OpenXR")
 	if interface and interface.initialize():
-		get_viewport().arvr = true
-		get_viewport().hdr = false
+		get_viewport().use_xr = true
 	else:
 		print("failed to init OpenXR")

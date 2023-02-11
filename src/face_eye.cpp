@@ -67,31 +67,31 @@ void FaceEye::_ready() {
 	ViveSR::Error err = static_cast<ViveSR::Error>(ViveSR::anipal::Initial(ViveSR::anipal::Eye::ANIPAL_TYPE_EYE, NULL));
 	switch (err) {
 		case ViveSR::Error::WORK:
-			cout << "Successfully initialized SRanipal." << endl;
+			cout << "Successfully initialized SRanipal eyes." << endl;
 			poll_eyes_thread = std::thread(&FaceEye::poll_eyes, this);
 			break;
 		case ViveSR::Error::RUNTIME_NOT_FOUND:
-			cout << "Failed to initialize SRanipal: Runtime not found." << endl;
+			cout << "Cannot initialize SRanipal: Runtime not found." << endl;
 			break;
 		default:
-			cout << "Failed to initialize SRanipal. Unknown error code " << err << endl;
+			cout << "Cannot initialize SRanipal. Unknown error code " << err << endl;
 	}
 	int32_t error = ViveSR::anipal::Initial(ViveSR::anipal::Lip::ANIPAL_TYPE_LIP_V2, NULL);
 	if (error == ViveSR::Error::WORK) {
-		printf("Successfully initialize version2 Lip engine.\n");
+		printf("Successfully initialize SRanipal lips.\n");
 		poll_lips_thread = std::thread(&FaceEye::poll_lips, this);
 	} else {
-		printf("Fail to initialize version2 Lip engine. please refer the code %d %s.\n", error, ConvertErrorCode(error).c_str());
+		printf("Cannot initialize SRanipal lips. Please refer the code %d %s.\n", error, ConvertErrorCode(error).c_str());
 	}
 }
 
 FaceEye::FaceEye() {
-	cout << "FaceEye ctor" << endl;
+	cout << "FaceEye::FaceEye()" << endl;
 }
 
 FaceEye::~FaceEye() {
 	ViveSR::anipal::Release(ViveSR::anipal::Lip::ANIPAL_TYPE_LIP_V2);
-	cout << "FaceEye dtor" << endl;
+	cout << "FaceEye::~FaceEye()" << endl;
 }
 
 void FaceEye::poll_eyes() {
@@ -125,11 +125,12 @@ void godot::FaceEye::poll_lips() {
 		std::this_thread::sleep_for(1ms);
 		int prev_frame = poll_lip_data.frame_sequence;
 
-		int32_t result = ViveSR::anipal::Lip::GetLipData_v2(&lip_data_v2);
+		int32_t result = ViveSR::anipal::Lip::GetLipData_v2(&poll_lip_data);
 		if (result == ViveSR::Error::WORK) {
 			int delta = poll_lip_data.frame_sequence - prev_frame;
 			if (delta > 0) {
 				if (delta > 1) {
+					cout << "Frame delta: " << poll_lip_data.frame_sequence - prev_frame << endl;
 				}
 				bool success = lip_queue.enqueue(poll_lip_data);
 				if (!success) {
@@ -150,8 +151,9 @@ bool FaceEye::next_eye_data() {
 
 bool FaceEye::update_eye_data() {
 	bool success = false;
-	while (next_eye_data())
+	while (next_eye_data()) {
 		success = true;
+	}
 	return success;
 }
 
@@ -350,4 +352,30 @@ std::string godot::FaceEye::ConvertErrorCode(int error) {
 			result = "No such error code";
 	}
 	return result;
+}
+
+PackedFloat32Array godot::FaceEye::get_lip_data() {
+	PackedFloat32Array data;
+	data.resize(ViveSR::anipal::Lip::blend_shape_nums);
+	float *weightings = lip_data_v2.prediction_data.blend_shape_weight;
+	for (int i = 0; i < ViveSR::anipal::Lip::blend_shape_nums; i++) {
+		data[i] = weightings[i];
+	}
+	return data;
+}
+
+bool godot::FaceEye::update_lip_data() {
+	bool success = false;
+	while (next_lip_data()) {
+		success = true;
+	}
+	return success;
+}
+
+bool godot::FaceEye::next_lip_data() {
+	bool success = lip_queue.try_dequeue(lip_data_v2);
+	if (success) {
+		lip_data_valid = true;
+	}
+	return success;
 }

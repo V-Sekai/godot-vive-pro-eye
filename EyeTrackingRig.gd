@@ -34,10 +34,14 @@ func vec3(x):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	var success = $EyeTracker.update_eye_data()
-	if success:
+	var eye_success = $EyeTracker.update_eye_data()
+	if eye_success:
 		$LeftMarker.translation = $EyeTracker.get_gaze_direction(-1) + $EyeTracker.get_eyeball_position(-1)
 		$LeftMarker.scale = vec3($EyeTracker.get_eye_openness(-1))
 		$RightMarker.translation = $EyeTracker.get_gaze_direction(1) + $EyeTracker.get_eyeball_position(1)
 		$RightMarker.scale = vec3($EyeTracker.get_eye_openness(1))
 		$CombinedMarker.translation = $EyeTracker.get_gaze_direction(0)
+	var lip_success = $EyeTracker.update_lip_data()
+	if lip_success:
+		var lip_data : PackedFloat32Array = $EyeTracker.get_lip_data()
+		print(lip_data.size())

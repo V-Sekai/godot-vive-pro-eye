@@ -165,11 +165,12 @@ else:
     cpp_library += '.template_release'
     env['target_name'] += '.template_release'
 
-cpp_library += '.x86_64'
 
 if env["precision"] == "double":
+    cpp_library += '.double'
     env['target_name'] += '.double'
 
+cpp_library += '.x86_64'
 env['target_name'] += '.x86_64'
 
 if env['platform'] in ('osx', 'macos'):
