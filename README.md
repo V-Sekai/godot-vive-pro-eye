@@ -27,7 +27,7 @@ Install the **scons** build system.
 
 Download and extract the
 [SRanipal SDK](https://developer.vive.com/resources/knowledgebase/vive-sranipal-sdk/)'s
-`bin\`, `lib\` and `include\` directories to `thirdparty\SRanipal_SDK`. For details, refer
+`bin\`, `lib\` and `include\` directories to `thirdparty\vive_sranipal_sdk`. For details, refer
 to [the README in that directory](thirdparty/SRanipal_SDK/README.txt).
 
 ### Preparation
@@ -51,7 +51,7 @@ After having prepared everything, type into a command line with ming-llvm instal
 scons p=windows use_mingw=yes use_llvm=yes
 ```
 
-This should create `bin\win64\libgdexample.dll`
+This should create `bin\libfaceeye.dll`
 
 ## Running
 
@@ -72,8 +72,8 @@ For use in Godot, the method names are the same.
 
 Create a _Node_ object. 
 
-Then you can call `ThatObject.update_eye_data()` and
-`ThatObject.get_gaze_direction(0)` from your own GDscripts.
+Then you can call `FaceEye.update_eye_data()` and
+`FaceEye.get_gaze_direction(0)` from your own GDscripts.
 
 # License
 
