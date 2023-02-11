@@ -70,7 +70,7 @@ if env['p'] != '':
 
 if env['platform'] == '':
     print("No valid target platform selected.")
-    quit();
+    quit()
 
 if env['platform'] != 'windows' or bits != 64:
 	print("For now, only 64bit windows is supported. Sorry.")
@@ -80,6 +80,7 @@ if env['platform'] != 'windows' or bits != 64:
 if env['platform'] == "osx":
     env['target_path'] += 'osx/'
     cpp_library += '.osx'
+    env['target_name'] += '.osx'
     if env['target'] in ('debug', 'd'):
         env.Append(CCFLAGS = ['-g','-O2', '-arch', 'x86_64'])
         env.Append(LINKFLAGS = ['-arch', 'x86_64'])
@@ -95,6 +96,7 @@ elif env['platform'] in ('x11', 'linux'):
 
     env['target_path'] += 'x11/'
     cpp_library += '.linux'
+    env['target_name'] += '.linux'
     if env['target'] in ('debug', 'd'):
         env.Append(CCFLAGS = ['-fPIC', '-g3','-Og', '-std=c++17'])
     else:
@@ -113,6 +115,7 @@ elif env['platform'] == "windows" and (env["use_mingw"] or env["use_llvm"]):
 elif env['platform'] == "windows":
     env['target_path'] += 'win64/'
     cpp_library += '.windows'
+    env['target_name'] += '.windows'
     # This makes sure to keep the session environment variables on windows,
     # that way you can run scons in a vs 2017 prompt and it will find all the required tools
     env.Append(ENV = os.environ)
@@ -156,10 +159,13 @@ elif env['CXX'].endswith("g++"):
 
 if env['target'] in ('template_debug', 'd'):
     cpp_library += '.template_debug'
+    env['target_name'] += '.template_debug'
 else:
     cpp_library += '.template_release'
+    env['target_name'] += '.template_release'
 
 cpp_library += '.' + "x86_64"
+env['target_name'] += '.' + 'x86_64.dll'
 
 # make sure our binding library is properly included
 env.Append(CPPPATH=[
