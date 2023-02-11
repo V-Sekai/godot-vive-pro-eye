@@ -11,7 +11,7 @@ This project provides a Godot driver for the HTC Vive Pro Eye and Facial tracker
 |   |-- x11                        which has its sources in native/
 |   `-- win64
 |
-`-- native                         C++ source files for the binary plugin
+`-- thirdparty                     C++ source files for the binary plugin
 	|-- godot-cpp                  Godot C++ bindings
 	|-- SRanipal_SDK               Placeholder directory for the SRanipal files
 	`-- src                        The actual source code
@@ -27,8 +27,8 @@ Install the **scons** build system.
 
 Download and extract the
 [SRanipal SDK](https://developer.vive.com/resources/knowledgebase/vive-sranipal-sdk/)'s
-`bin\`, `lib\` and `include\` directories to `native\SRanipal_SDK`. For details, refer
-to [the README in that directory](native/SRanipal_SDK/README.txt).
+`bin\`, `lib\` and `include\` directories to `thirdparty\SRanipal_SDK`. For details, refer
+to [the README in that directory](thirdparty/SRanipal_SDK/README.txt).
 
 ### Preparation
 

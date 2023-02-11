@@ -33,9 +33,9 @@ env = SConscript("godot-cpp/SConstruct")
 
 # first check whether the SRanipal SDK has been installed correctly.
 
-sranipal_bin_found = os.path.isdir("./thirdparty/SRanipal_SDK/bin")
-sranipal_inc_found = os.path.isdir("./thirdparty/SRanipal_SDK/include")
-sranipal_lib_found = os.path.isdir("./thirdparty/SRanipal_SDK/lib")
+sranipal_bin_found = os.path.isdir("./thirdparty/vive_sranipal_sdk/bin")
+sranipal_inc_found = os.path.isdir("./thirdparty/vive_sranipal_sdk/include")
+sranipal_lib_found = os.path.isdir("./thirdparty/vive_sranipal_sdk/lib")
 
 if not (sranipal_bin_found and sranipal_inc_found and sranipal_lib_found):
 	print("Error: The SRanipal SDK was not installed correctly. (bin %sfound, include %sfound, lib %sfound)."  % ("" if sranipal_bin_found else "NOT ","" if sranipal_inc_found else "NOT ","" if sranipal_lib_found else "NOT "))
@@ -50,7 +50,7 @@ opts.Add(EnumVariable('target', "Compilation target", 'debug', ['d', 'debug', 'r
 opts.Add(EnumVariable('platform', "Compilation platform", '', ['', 'windows', 'x11', 'linux', 'osx']))
 opts.Add(EnumVariable('p', "Compilation target, alias for 'platform'", '', ['', 'windows', 'x11', 'linux', 'osx']))
 opts.Add(BoolVariable('use_llvm', "Use the LLVM / Clang compiler", 'no'))
-opts.Add(PathVariable('target_path', 'The path where the lib is installed.', '../bin/'))
+opts.Add(PathVariable('target_path', 'The path where the lib is installed.', './bin/'))
 opts.Add(PathVariable('target_name', 'The library name.', 'libfaceeye', PathVariable.PathAccept))
 opts.Add(BoolVariable('use_mingw', "Cross-compile for Windows", 'no'))
 
@@ -170,12 +170,12 @@ env.Append(CPPPATH=[
 	cpp_bindings_path + 'include/core/',
 	cpp_bindings_path + 'include/gen/',
     cpp_bindings_path + 'gen/include/',
-	"SRanipal_SDK/include"
+	"vive_sranipal_sdk/include"
 ])
 
 env.Append(LIBPATH=[
 	cpp_bindings_path + 'bin/',
-	"SRanipal_SDK/lib"
+	"vive_sranipal_sdk/lib"
 ])
 
 env.Append(LIBS=[
@@ -189,7 +189,7 @@ sources = [
 ]
 
 library = env.SharedLibrary(target=env['target_path'] + env['target_name'] , source=sources)
-install_sranipal = env.Install(env['target_path'], ["./SRanipal_SDK/bin/%s" % f for f in ["HTC_License", "libHTC_License.dll", "nanomsg.dll", "SRanipal.dll", "SRWorks_Log.dll", "ViveSR_Client.dll"]])
+install_sranipal = env.Install(env['target_path'], ["./thirdparty/vive_sranipal_sdk/bin/%s" % f for f in ["HTC_License", "libHTC_License.dll", "nanomsg.dll", "SRanipal.dll", "SRWorks_Log.dll", "ViveSR_Client.dll"]])
 
 Default([library, install_sranipal])
 
