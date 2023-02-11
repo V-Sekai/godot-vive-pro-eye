@@ -59,8 +59,9 @@ private:
 	/** gives the left, combined or right eye data for eye = -1/0/1 */
 	const ViveSR::anipal::Eye::SingleEyeData *get_eye(int eye);
 
-	moodycamel::ReaderWriterQueue<ViveSR::anipal::Eye::EyeData> queue;
+	moodycamel::ReaderWriterQueue<ViveSR::anipal::Eye::EyeData> eye_queue;
 	std::thread poll_eyes_thread; // required for getting the full 120Hz from the HMD
+	moodycamel::ReaderWriterQueue<ViveSR::anipal::Lip::LipData_v2> lip_queue;
 	std::thread poll_lips_thread;
 
 	void poll_eyes();
@@ -88,6 +89,32 @@ public:
 		return garbage data.
 	*/
 	bool next_eye_data();
+
+	bool next_lip_data() {
+		bool success = lip_queue.try_dequeue(lip_data_v2);
+		if (success) {
+			data_valid = true;
+		}
+		return success;
+	}
+
+	bool update_lip_data() {
+		bool success = false;
+		while (next_lip_data()) {
+			success = true;
+		}
+		return success;
+	}
+
+	PackedFloat32Array get_lip_data() {
+		PackedFloat32Array data;
+		data.resize(ViveSR::anipal::Lip::blend_shape_nums);
+		float *weightings = lip_data_v2.prediction_data.blend_shape_weight;
+		for (int i = 0; i < ViveSR::anipal::Lip::blend_shape_nums; i++) {
+			data[i] = weightings[i];
+		}
+		return data;
+	}
 
 	/** returns the eye gaze origin in meters.
 		The Vector3 returned follows the godot convention, i.e.

@@ -47,6 +47,9 @@ void FaceEye::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("update_eye_data"), &FaceEye::update_eye_data);
 	ClassDB::bind_method(D_METHOD("next_eye_data"), &FaceEye::next_eye_data);
 	ClassDB::bind_method(D_METHOD("get_eyeball_position"), &FaceEye::get_eyeball_position);
+	ClassDB::bind_method(D_METHOD("update_lip_data"), &FaceEye::update_lip_data);
+	ClassDB::bind_method(D_METHOD("next_lip_data"), &FaceEye::next_lip_data);
+	ClassDB::bind_method(D_METHOD("get_lip_data"), &FaceEye::get_lip_data);
 	ClassDB::bind_method(D_METHOD("get_gaze_direction"), &FaceEye::get_gaze_direction);
 	ClassDB::bind_method(D_METHOD("is_user_present"), &FaceEye::is_user_present);
 	ClassDB::bind_method(D_METHOD("get_timestamp"), &FaceEye::get_timestamp);
@@ -106,7 +109,7 @@ void FaceEye::poll_eyes() {
 				if (delta > 1) {
 					cout << "frame delta: " << poll_eye_data.frame_sequence - prev_frame << endl;
 				}
-				bool success = queue.enqueue(poll_eye_data);
+				bool success = eye_queue.enqueue(poll_eye_data);
 				if (!success) {
 					cout << "ringbuf overflow" << endl;
 				}
@@ -116,23 +119,29 @@ void FaceEye::poll_eyes() {
 }
 
 void godot::FaceEye::poll_lips() {
-	ViveSR::anipal::Eye::EyeData poll_eye_data;
+	ViveSR::anipal::Lip::LipData_v2 poll_lip_data;
 
 	while (true) {
 		std::this_thread::sleep_for(1ms);
+		int prev_frame = poll_lip_data.frame_sequence;
+
 		int32_t result = ViveSR::anipal::Lip::GetLipData_v2(&lip_data_v2);
 		if (result == ViveSR::Error::WORK) {
-			float *weightings = lip_data_v2.prediction_data.blend_shape_weight;
-			cout << "Lip Ver2:" << endl;
-			for (int i = 0; i < ViveSR::anipal::Lip::blend_shape_nums; i++) {
-				cout << weightings[i] << endl;
+			int delta = poll_lip_data.frame_sequence - prev_frame;
+			if (delta > 0) {
+				if (delta > 1) {
+				}
+				bool success = lip_queue.enqueue(poll_lip_data);
+				if (!success) {
+					cout << "Ring buffer overflow" << endl;
+				}
 			}
 		}
 	}
 }
 
 bool FaceEye::next_eye_data() {
-	bool success = queue.try_dequeue(eye_data);
+	bool success = eye_queue.try_dequeue(eye_data);
 	if (success) {
 		data_valid = true;
 	}
