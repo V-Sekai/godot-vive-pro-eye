@@ -33,9 +33,9 @@ env = SConscript("godot-cpp/SConstruct")
 
 # first check whether the SRanipal SDK has been installed correctly.
 
-sranipal_bin_found = os.path.isdir("./SRanipal_SDK/bin")
-sranipal_inc_found = os.path.isdir("./SRanipal_SDK/include")
-sranipal_lib_found = os.path.isdir("./SRanipal_SDK/lib")
+sranipal_bin_found = os.path.isdir("./thirdparty/SRanipal_SDK/bin")
+sranipal_inc_found = os.path.isdir("./thirdparty/SRanipal_SDK/include")
+sranipal_lib_found = os.path.isdir("./thirdparty/SRanipal_SDK/lib")
 
 if not (sranipal_bin_found and sranipal_inc_found and sranipal_lib_found):
 	print("Error: The SRanipal SDK was not installed correctly. (bin %sfound, include %sfound, lib %sfound)."  % ("" if sranipal_bin_found else "NOT ","" if sranipal_inc_found else "NOT ","" if sranipal_lib_found else "NOT "))

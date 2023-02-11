@@ -1,6 +1,6 @@
-[submodule "native/godot-cpp"]
-	path = native/godot-cpp
+[submodule "godot-cpp"]
+	path = godot-cpp
 	url = https://github.com/GodotNativeTools/godot-cpp
-[submodule "native/SRanipal_SDK"]
-	path = native/SRanipal_SDK
+[submodule "thirdparty/vive_sranipal_sdk"]
+	path = thirdparty/vive_sranipal_sdk
 	url = git@github.com:V-Sekai/vive_sranipal_sdk.git
