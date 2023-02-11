@@ -165,18 +165,22 @@ else:
     cpp_library += '.template_release'
     env['target_name'] += '.template_release'
 
+cpp_library += '.x86_64'
+
 if env["precision"] == "double":
     env['target_name'] += '.double'
 
-cpp_library += '.x86_64'
 env['target_name'] += '.x86_64'
 
 if env['platform'] in ('osx', 'macos'):
     env["SHLIBSUFFIX"] = ".so"
+    env['target_name'] += ".so"
 elif env['platform'] in ('x11', 'linux'):
     env["SHLIBSUFFIX"] = ".so"
+    env['target_name'] += ".so"
 elif env['platform'] == "windows":
     env["SHLIBSUFFIX"] = ".dll"
+    env['target_name'] += ".dll"
 
 # make sure our binding library is properly included
 env.Append(CPPPATH=[
