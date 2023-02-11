@@ -123,7 +123,7 @@ public:
 	~FaceEye();
 	void _init();
 	void _ready();
-	std::string CovertErrorCode(int error);
+	std::string ConvertErrorCode(int error);
 };
 
 } // namespace godot

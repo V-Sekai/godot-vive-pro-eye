@@ -78,7 +78,7 @@ void FaceEye::_ready() {
 		printf("Successfully initialize version2 Lip engine.\n");
 		poll_lips_thread = std::thread(&FaceEye::poll_lips, this);
 	} else {
-		printf("Fail to initialize version2 Lip engine. please refer the code %d %s.\n", error, CovertErrorCode(error).c_str());
+		printf("Fail to initialize version2 Lip engine. please refer the code %d %s.\n", error, ConvertErrorCode(error).c_str());
 	}
 }
 
@@ -196,7 +196,7 @@ double FaceEye::get_pupil_size(int eye) {
 double FaceEye::get_eye_openness(int eye) {
 	return get_eye(eye)->eye_openness;
 }
-std::string godot::FaceEye::CovertErrorCode(int error) {
+std::string godot::FaceEye::ConvertErrorCode(int error) {
 	std::string result = "";
 	switch (error) {
 		case (ViveSR::Error::RUNTIME_NOT_FOUND):
