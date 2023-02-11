@@ -40,15 +40,9 @@ Then open the Visual Studio Native Tools prompt, and do:
 cd godot-cpp
 scons -c      # cleans up any previous build
 (path/to/godot --gdnative-generate-json-api godot_api.json # build up-to-date bindings. ONLY NEEDED if you know what you are doing)
-scons p=windows generate_bindings=yes bits=64 use_mingw=yes use_llvm=yes
-```
-
-### Building
-
-After having prepared everything, type into a command line with ming-llvm installed:
-
-```
-scons p=windows use_mingw=yes use_llvm=yes
+scons p=windows generate_bindings=yes bits=64
+cd ..
+scons p=windows
 ```
 
 This should create `bin\libfaceeye.dll`
