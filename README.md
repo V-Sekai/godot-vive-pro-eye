@@ -23,8 +23,6 @@ This project provides a Godot driver for the HTC Vive Pro Eye and Facial tracker
 
 **WARNING WORK IN PROGRESS**
 
-**Not working as of 2022-07-03**
-
 Install the **scons** build system.
 
 Download and extract the
@@ -70,10 +68,11 @@ If you close one of the eyes, the corresponding sphere's size gets gradually sma
 
 # Documentation
 
-Sorry, currrently, you can only read the comments in the [header file](native/src/myclass.h).
+For use in Godot, the method names are the same.
 
-For use in Godot, the method names are the same. Just create a _Node_-object and attach
-the _MyClass.gdns_ script to it. Then you can call `ThatObject.update_eye_data()` and
+Create a _Node_ object. 
+
+Then you can call `ThatObject.update_eye_data()` and
 `ThatObject.get_gaze_direction(0)` from your own GDscripts.
 
 # License
