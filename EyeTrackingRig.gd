@@ -41,7 +41,9 @@ func _process(delta):
 		$RightMarker.translation = $EyeTracker.get_gaze_direction(1) + $EyeTracker.get_eyeball_position(1)
 		$RightMarker.scale = vec3($EyeTracker.get_eye_openness(1))
 		$CombinedMarker.translation = $EyeTracker.get_gaze_direction(0)
-	var lip_success = $EyeTracker.update_lip_data()
-	if lip_success:
-		var lip_data : PackedFloat32Array = $EyeTracker.get_lip_data()
-		print(lip_data.size())
+#	var lip_success = $EyeTracker.update_lip_data()
+#	if lip_success:
+#		var lip_data : PackedFloat32Array = $EyeTracker.get_lip_data()
+#		for lip_i in range(lip_data.size()):
+#			if not is_zero_approx(lip_data[lip_i]):
+#				print("%f %f" % [lip_i, lip_data[lip_i]])
