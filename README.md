@@ -39,7 +39,7 @@ Run `git submodule update --init --recursive` to initialize the submodules.
 Then open the Visual Studio Native Tools prompt, and do:
 
 ```
-cd native/godot-cpp
+cd godot-cpp
 scons -c      # cleans up any previous build
 (path/to/godot --gdnative-generate-json-api godot_api.json # build up-to-date bindings. ONLY NEEDED if you know what you are doing)
 scons p=windows generate_bindings=yes bits=64 use_mingw=yes use_llvm=yes
