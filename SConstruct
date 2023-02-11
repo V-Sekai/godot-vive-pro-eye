@@ -172,11 +172,11 @@ cpp_library += '.x86_64'
 env['target_name'] += '.x86_64'
 
 if env['platform'] in ('osx', 'macos'):
-    env['target_name'] += '.so'
+    env["SHLIBSUFFIX"] = ".so"
 elif env['platform'] in ('x11', 'linux'):
-    env['target_name'] += '.so'
+    env["SHLIBSUFFIX"] = ".so"
 elif env['platform'] == "windows":
-    env['target_name'] += '.dll'
+    env["SHLIBSUFFIX"] = ".dll"
 
 # make sure our binding library is properly included
 env.Append(CPPPATH=[
