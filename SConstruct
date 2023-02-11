@@ -169,7 +169,14 @@ if env["precision"] == "double":
     env['target_name'] += '.double'
 
 cpp_library += '.x86_64'
-env['target_name'] += '.x86_64.dll'
+env['target_name'] += '.x86_64'
+
+if env['platform'] in ('osx', 'macos'):
+    env['target_name'] += '.so'
+elif env['platform'] in ('x11', 'linux'):
+    env['target_name'] += '.so'
+elif env['platform'] == "windows":
+    env['target_name'] += '.dll'
 
 # make sure our binding library is properly included
 env.Append(CPPPATH=[
