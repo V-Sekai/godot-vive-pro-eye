@@ -53,6 +53,7 @@ opts.Add(BoolVariable('use_llvm', "Use the LLVM / Clang compiler", 'no'))
 opts.Add(PathVariable('target_path', 'The path where the lib is installed.', './bin/'))
 opts.Add(PathVariable('target_name', 'The library name.', 'libfaceeye', PathVariable.PathAccept))
 opts.Add(BoolVariable('use_mingw', "Cross-compile for Windows", 'no'))
+opts.Add(EnumVariable("precision", "Set the floating-point precision level", "single", ("single", "double")))
 
 # Local dependency paths, adapt them to your setup
 godot_headers_path = "godot-cpp/"
@@ -61,6 +62,9 @@ cpp_library = "libgodot-cpp"
 
 # only support 64 at this time..
 bits = 64
+
+if env["precision"] == "double":
+    env.Append(CPPDEFINES=["REAL_T_IS_DOUBLE"])
 
 # Updates the environment with the option variables.
 opts.Update(env)
@@ -78,7 +82,6 @@ if env['platform'] != 'windows' or bits != 64:
 
 # Check our platform specifics
 if env['platform'] == "osx":
-    env['target_path'] += 'osx/'
     cpp_library += '.osx'
     env['target_name'] += '.osx'
     if env['target'] in ('debug', 'd'):
@@ -94,7 +97,6 @@ elif env['platform'] in ('x11', 'linux'):
         env['CC'] = 'clang'
         env['CXX'] = 'clang++'
 
-    env['target_path'] += 'x11/'
     cpp_library += '.linux'
     env['target_name'] += '.linux'
     if env['target'] in ('debug', 'd'):
@@ -113,7 +115,6 @@ elif env['platform'] == "windows" and (env["use_mingw"] or env["use_llvm"]):
     ])
     cpp_library += '.windows'
 elif env['platform'] == "windows":
-    env['target_path'] += 'win64/'
     cpp_library += '.windows'
     env['target_name'] += '.windows'
     # This makes sure to keep the session environment variables on windows,

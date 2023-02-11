@@ -40,9 +40,9 @@ Then open the Visual Studio Native Tools prompt, and do:
 cd godot-cpp
 scons -c      # cleans up any previous build
 (path/to/godot --gdnative-generate-json-api godot_api.json # build up-to-date bindings. ONLY NEEDED if you know what you are doing)
-scons p=windows generate_bindings=yes bits=64
+scons p=windows generate_bindings=yes bits=64 precision=double
 cd ..
-scons p=windows
+scons p=windows precision=double
 ```
 
 This should create `bin\libfaceeye.dll`
